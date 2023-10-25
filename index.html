@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .container {
+        width: 300px;
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px; /* Add margin to separate the button from the input */
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <h1>Shop dApp</h1>
+      <p>Here you can buy eggs and milk in one click</p>
+
+      <button onclick="buyMilk()">Buy Milk</button>
+      <button onclick="buyEgg()">Buy Egg</button>
+    </div>
+
+    <script
+      src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "sepolia"
+      );
+
+      const ShopContractAddress = "0x9faA2E91E3758f488A486E04ef7D0619025c7FDb";
+      const ShopContractABI = [
+        {
+          inputs: [],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [],
+          name: "buyEgg",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "buyMilk",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "egg",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "milk",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+      ];
+
+      let ShopContract;
+      let signer;
+
+      provider.send("eth_requestAccounts", []).then(() => {
+        provider.listAccounts().then(function (accounts) {
+          signer = provider.getSigner(accounts[0]);
+          ShopContract = new ethers.Contract(
+            ShopContractAddress,
+            ShopContractABI,
+            signer
+          );
+        });
+      });
+
+      async function buyMilk() {
+        const buyMilk = ShopContract.buyMilk();
+        const Result = await buyMilk;
+        if (Result) {
+          console.log("Congratulations You bought the milk");
+        }
+      }
+
+      async function buyEgg() {
+        const buyEgg = ShopContract.buyEgg();
+        const Result = await buyEgg;
+        if (Result) {
+          console.log("Congratulations You bought the Eggs");
+        }
+      }
+    </script>
+  </body>
+</html>
